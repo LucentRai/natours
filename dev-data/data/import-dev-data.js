@@ -5,11 +5,11 @@ const Tour = require('./../../models/tourModel');
 const User = require('./../../models/userModel');
 const Review = require('./../../models/reviewModel');
 
-dotenv.config({path: '../../config'});
+dotenv.config({path: `${__dirname}/../../config.env`});
 
 mongoose
-	.connect('mongodb://127.0.0.1:27017/tour')
-	// .connect(process.env.DB.replace('<password>', process.env.DB_PASSWORD))
+	// .connect('mongodb://127.0.0.1:27017/tour')
+	.connect(process.env.DB.replace('<password>', process.env.DB_PASSWORD))
 	.then(() => console.log('DB connected successfully'))
 	.catch(err => console.error(err));
 
@@ -17,6 +17,13 @@ mongoose
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'));
 const users = JSON.parse(fs.readFileSync(`${__dirname}/users.json`, 'utf-8'));
 const reviews = JSON.parse(fs.readFileSync(`${__dirname}/reviews.json`, 'utf-8'));
+
+if(process.argv[2] === '--import'){
+	importData();
+}
+else if(process.argv[2] === '--delete'){
+	deleteData();
+}
 
 // IMPORT DATA INTO DB
 async function importData(){
@@ -44,11 +51,4 @@ async function deleteData(){
 		console.log(error);
 	}
 	process.exit();
-}
-
-if(process.argv[2] === '--import'){
-	importData();
-}
-else if(process.argv[2] === '--delete'){
-	deleteData();
 }
