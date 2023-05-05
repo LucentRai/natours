@@ -118,6 +118,7 @@ const tourSchema = new mongoose.Schema({
 // INDICES
 tourSchema.index({price: 1, ratingsAverage: -1}); // 1 for ascending, -1 for descending
 tourSchema.index({slug: 1});
+tourSchema.index({startLocation: '2dsphere'}); // needed for geospatial queries
 
 // every time get() is used, this virtual property is formed but not persisted in Database
 tourSchema.virtual('durationWeeks').get(function(){	// regular function is used to access this keyword
@@ -160,12 +161,17 @@ tourSchema.post(/^find/, function(documents, next){
 });
 
 // AGGREGATION MIDDLEWARE
+/*
 tourSchema.pre('aggregate', function(next){
 	this.pipeline().unshift({ $match: {secretTour: {$ne: true}} });
-	console.log(this.pipeline());
+
+	if(process.env.NODE_env === 'development'){
+		console.log(this.pipeline());
+	}
+
 	next();
 });
-
+*/
 const Tour = mongoose.model('Tour', tourSchema);
 
 module.exports = Tour;

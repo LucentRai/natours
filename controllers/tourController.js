@@ -2,7 +2,7 @@ const { query } = require('express');
 const { post } = require('../app');
 const Tour = require('../models/tourModel');
 const catchAsync = require('../utils/catchAsync');
-// const AppError = require('../utils/AppError');
+const AppError = require('../utils/AppError');
 const factory = require('./handlerFactory');
 
 function aliasTopTour(request, response, next){ // Middleware for top-5-cheap route
@@ -82,6 +82,64 @@ async function getMonthlyTours(request, response){
 		});
 }
 
+async function getTourWithin(request, response, next){
+	const {distance, unit, latLon} = request.params;
+	const [latitude, longitude] = latLon.split(',');
+	const radius = unit === 'km' ? distance / 6378.1: distance / 3963.2; // in unit radians; distance divided by radius of earth
+
+	if(!latitude || !longitude){
+		next(new AppError(`Provide latitude and longitude data in "lat,lon" format`, 400));
+	}
+
+	const tours = await Tour.find({
+		startLocation: {$geoWithin: {$centerSphere: [[longitude, latitude], radius]}}
+	});
+
+	response
+		.status(200)
+		.json({
+			status: 'success',
+			results: tours.length,
+			data: tours
+		});
+}
+
+async function getTourDistances(request, response, next){
+	const {latLon, unit} = request.params;
+	const [latitude, longitude] = latLon.split(',');
+	const multiplier = unit === 'km' ? 0.001 : 0.000621371; // distance is provided in meters; 1m = 0.001km, 1m = 000621371mi
+
+	if(!latitude || !longitude){
+		next(new AppError(`Provide latitude and longitude data in "lat,lon" format`, 400));
+	}
+
+	const distances = await Tour.aggregate([
+		{
+			$geoNear: { // $geoNear should always come before any other property in whole aggregate pipeline
+				near: {
+					type: "Point",
+					// coordinates: c
+					coordinates: [longitude * 1, latitude * 1] // converting string to integer
+				},
+				distanceField: 'distance',
+				distanceMultiplier: multiplier
+			}
+		},
+		{
+			$project: { // show the following properties; 1 means yes
+				distance: 1,
+				name: 1
+			}
+		}
+	]);
+
+	response
+		.status(200)
+		.json({
+			data: distances
+	});
+}
+
 module.exports = {
 	getAllTours: factory.getAll(Tour),
 	getTour: factory.getOne(Tour, {path: 'reviews'}),
@@ -90,5 +148,7 @@ module.exports = {
 	deleteTour: factory.deleteOne(Tour),
 	aliasTopTour,
 	getTourStats: catchAsync(getTourStats),
-	getMonthlyTours: catchAsync(getMonthlyTours)
+	getMonthlyTours: catchAsync(getMonthlyTours),
+	getTourWithin: catchAsync(getTourWithin),
+	getTourDistances: catchAsync(getTourDistances)
 }

@@ -26,4 +26,13 @@ router.route('/:id')
 	.patch(authController.checkLogin, authController.restrictTo('admin', 'tour-lead'), tourController.patchTour)
 	.delete(authController.checkLogin, authController.restrictTo('admin', 'tour-lead'), tourController.deleteTour);
 
+
+// /tours-within/200/km/location/34.204015,-118.241139
+router.route('/tours-within/:distance/:unit/location/:latLon/')
+	.get(tourController.getTourWithin);
+
+	// get-distances/km/location/34.204015,-118.241139
+router.route('/get-distances/:unit/location/:latLon')
+	.get(tourController.getTourDistances);
+
 module.exports = router;
