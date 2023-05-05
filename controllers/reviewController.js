@@ -7,7 +7,7 @@ function setTourUserId(request, response, next){
 		request.body.user = request.userInfo.id;
 	}
 	if(!request.body.tour){
-		request.body.tour = request.params.id;
+		request.body.tour = request.params.tourId;
 	}
 	next();
 }
