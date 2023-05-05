@@ -6,7 +6,7 @@ process.on('unhandledException', err => {
 	console.log(err);
 	console.log('Unhandled Exception: Shutting Down...');
 	process.exit(1);
-})
+});
 
 const app = require('./app');
 
