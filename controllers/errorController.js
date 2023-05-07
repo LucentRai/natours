@@ -1,7 +1,6 @@
 const AppError = require('../utils/AppError');
 
 module.exports = (error, request, response, next) => {
-
 	error.statusCode = error.statusCode || 500;
 	error.status = error.status || 'Error';
 	error.message = error.message || 'Something went very wrong';
@@ -11,7 +10,7 @@ module.exports = (error, request, response, next) => {
 		return;
 	}
 
-	let e = { ...error };
+	let e = { ...error }; // copy object not reference
 	if(error.name === 'CastError'){ // for CastError type errors (invalid DB id)
 		e = handleCastErrorDB(error);
 	}
@@ -27,7 +26,6 @@ module.exports = (error, request, response, next) => {
 	if(error.name === 'TokenExpiredError'){
 		e = handleJWTExpire();
 	}
-	console.log(error);
 	sendErrorClient(e, response);
 	return;
 };

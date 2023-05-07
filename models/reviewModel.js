@@ -38,7 +38,6 @@ reviewSchema.index({tour: 1, user: 1}, {unique: true});
 
 // AGGREGATE STATIC INSTANCE METHOD
 reviewSchema.statics.calculateAverageRatings = async function (tourId){
-	console.log('here');
 	const stats = await this.aggregate([
 		{
 			$match: {tour: tourId}

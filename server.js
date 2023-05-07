@@ -2,12 +2,6 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 dotenv.config({path: './config.env'});
 
-process.on('unhandledException', err => {
-	console.log(err);
-	console.log('Unhandled Exception: Shutting Down...');
-	process.exit(1);
-});
-
 const app = require('./app');
 
 mongoose
@@ -26,4 +20,10 @@ process.on('unhandledRejection', err => {
 	server.close(() => {
 		process.exit(1); // 1 for app failure, 0 for successful run
 	});
+});
+
+process.on('unhandledException', err => {
+	console.log(err);
+	console.log('Unhandled Exception: Shutting Down...');
+	process.exit(1);
 });
