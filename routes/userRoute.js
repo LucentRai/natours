@@ -10,7 +10,7 @@ userRouter.post('/login', authController.login);
 userRouter.patch('/resetPassword/:token', authController.resetPassword);
 
 // CHECK LOGIN
-userRouter.use(authController.checkLogin);
+userRouter.use(authController.protectRoute);
 
 userRouter.get('/me', userController.getMe, userController.getUser);
 userRouter.patch('/updatePassword', authController.updatePassword);

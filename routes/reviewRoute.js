@@ -5,11 +5,11 @@ const AppError = require('../utils/AppError');
 
 const router = express.Router({mergeParams: true}); // when mergeParams: true, the request.params of tour routes will be accessible to this route as well
 
-router.use(authController.checkLogin);
+router.use(authController.protectRoute);
 
 router.route('/')
 	.get(reviewController.getAllReview)
-	.post(authController.checkLogin, authController.restrictTo('user'), reviewController.setTourUserId, reviewController.createReview);
+	.post(authController.protectRoute, authController.restrictTo('user'), reviewController.setTourUserId, reviewController.createReview);
 
 router.route('/:id')
 	.get(reviewController.getReview)

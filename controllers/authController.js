@@ -92,7 +92,7 @@ async function resetPassword(request, response, next){
 
 async function updatePassword(request, response, next){
 	// Get user from collection
-	const user = await User.findById(request.userInfo.id).select('+password'); // request.userInfo comes from checkLogin()
+	const user = await User.findById(request.userInfo.id).select('+password'); // request.userInfo comes from protectRoute()
 
 	// Check if POSTed current password is correct
 	if(!user.isPasswordCorrect(request.body.currentPassword, user.password)){
@@ -108,7 +108,7 @@ async function updatePassword(request, response, next){
 	sendTokenResponse(user, 200, response);
 }
 
-async function checkLogin(request, response, next){
+async function protectRoute(request, response, next){
 	let token;
 
 	// check if JWT exits
@@ -182,7 +182,7 @@ function sendTokenResponse(user, statusCode, response){
 module.exports = {
 	signup: catchAsync(signup),
 	login: catchAsync(login),
-	checkLogin: catchAsync(checkLogin),
+	protectRoute: catchAsync(protectRoute),
 	restrictTo,
 	forgotPassword: catchAsync(forgotPassword),
 	resetPassword: catchAsync(resetPassword),

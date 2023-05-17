@@ -19,12 +19,12 @@ router.route('/tour-stats')
 
 router.route('/')
 	.get(tourController.getAllTours)
-	.post(authController.checkLogin, authController.restrictTo('admin', 'tour-lead'), tourController.postTour);
+	.post(authController.protectRoute, authController.restrictTo('admin', 'tour-lead'), tourController.postTour);
 
 router.route('/:id')
 	.get(tourController.getTour)
-	.patch(authController.checkLogin, authController.restrictTo('admin', 'tour-lead'), tourController.patchTour)
-	.delete(authController.checkLogin, authController.restrictTo('admin', 'tour-lead'), tourController.deleteTour);
+	.patch(authController.protectRoute, authController.restrictTo('admin', 'tour-lead'), tourController.patchTour)
+	.delete(authController.protectRoute, authController.restrictTo('admin', 'tour-lead'), tourController.deleteTour);
 
 
 // /tours-within/200/km/location/34.204015,-118.241139
