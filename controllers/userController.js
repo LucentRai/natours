@@ -28,7 +28,7 @@ async function updateMe(request, response, next){
 	if(request.body.password){
 		return next(new AppError('This route is not for updating passwords. Please use /updatePassword'), 400);
 	}
-	
+
 	// filter unwanted request body fields
 	const filteredBody = filterRequestBody(request.body, 'name', 'email');
 

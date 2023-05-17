@@ -23,7 +23,10 @@ async function getTour(request, response, next){
 		return next(new AppError(`This page does not exist`, 404));
 	}
 
-	response.status(200).render('tour', {tour});
+	response.status(200).render('tour', {
+		title: tour.name,
+		tour
+	});
 }
 
 module.exports = {

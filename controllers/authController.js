@@ -148,7 +148,7 @@ function restrictTo(...roles){
 			next(new AppError('You are not authorized to do this operation.', 403));
 		}
 		next();
-	}
+	};
 }
 
 function sendTokenResponse(user, statusCode, response){
