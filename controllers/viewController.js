@@ -29,7 +29,14 @@ async function getTour(request, response, next){
 	});
 }
 
+function getLoginForm(request, response, next){
+	response.status(200).render('login', {
+		title: 'Login'
+	});
+}
+
 module.exports = {
 	getOverview: catchAsync(getOverview),
-	getTour: catchAsync(getTour)
+	getTour: catchAsync(getTour),
+	getLoginForm
 };

@@ -19,6 +19,7 @@ async function signup(request, response, next){
 
 async function login(request, response, next){
 	const {email, password} = request.body;
+	console.log(email, password);
 
 	if(!email || !password){ // check if email and password exist
 		return next(new AppError('Email and password required.', 400));
@@ -114,6 +115,9 @@ async function checkLogin(request, response, next){
 	if(request.headers.authorization && request.headers.authorization.startsWith('Bearer')){
 		token = request.headers.authorization.split(' ')[1];
 	}
+	else if(request.cookies.jwt){
+		token = request.cookies.jwt;
+	}
 
 	if(!token){
 		next(new AppError('Please login to view this page', 401));
@@ -129,7 +133,7 @@ async function checkLogin(request, response, next){
 	}
 
 	// if password is changed after JWT was issued
-	if(userInfo.changedPasswordAfter(decoded.iat)){
+	if(userInfo.changedPasswordAfter(decoded.iat)){ // iat: "issued at"
 		return next(new AppError('User recently changed password. Please login again', 401));
 	}
 

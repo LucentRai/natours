@@ -6,6 +6,7 @@ const rateLimit = require('express-rate-limit');
 const xss = require('xss-clean');
 const mongoSanitize = require('express-mongo-sanitize');
 const hpp = require('hpp');
+const cookieParser = require('cookie-parser');
 
 const AppError = require('./utils/AppError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -42,6 +43,7 @@ app.use('/api', rateLimit({
 
 // Reading data from body into request.body
 app.use(express.json({limit: '10kb'})); // limits the size of request data
+app.use(cookieParser()); // parse data from cookie
 
 // Data sanitization to prevent NoSQL injections
 app.use(mongoSanitize()); // replaces mongo operators from user input
@@ -61,8 +63,13 @@ app.use(hpp({
 	]
 }));
 
-/**** ROUTES ****/
+// Test middleware
+app.use((request, response, next) => {
+	console.log(request.cookies);
+	next();
+});
 
+/**** ROUTES ****/
 app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
