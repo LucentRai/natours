@@ -10,7 +10,7 @@ module.exports = (error, request, response, next) => {
 		return;
 	}
 
-	let e = { ...error }; // copy object not reference
+	let e = { ...error }; // copy object by value not reference
 	if(error.name === 'CastError'){ // for CastError type errors (invalid DB id)
 		e = handleCastErrorDB(error);
 	}
@@ -26,6 +26,8 @@ module.exports = (error, request, response, next) => {
 	if(error.name === 'TokenExpiredError'){
 		e = handleJWTExpire();
 	}
+
+	e.message = error.message;
 	sendErrorClient(e, response);
 	return;
 };
