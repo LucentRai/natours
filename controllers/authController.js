@@ -19,7 +19,6 @@ async function signup(request, response, next){
 
 async function login(request, response, next){
 	const {email, password} = request.body;
-	console.log(email, password);
 
 	if(!email || !password){ // check if email and password exist
 		return next(new AppError('Email and password required.', 400));
@@ -108,6 +107,7 @@ async function updatePassword(request, response, next){
 	sendTokenResponse(user, 200, response);
 }
 
+
 async function protectRoute(request, response, next){
 	let token;
 
@@ -139,6 +139,36 @@ async function protectRoute(request, response, next){
 
 	// Grant Access to protected route
 	request.userInfo = userInfo;
+	next();
+}
+
+async function isLoggedIn(request, response, next){
+	let token;
+
+	if(request.cookies.jwt){
+		token = request.cookies.jwt;
+	}
+
+	if(!token){
+		return next();
+	}
+
+	// JWT Verification
+	const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+	// if user is deleted
+	const userInfo = await User.findById(decoded.id);
+	if(!userInfo){
+		return next();
+	}
+
+	// if password is changed after JWT was issued
+	if(userInfo.changedPasswordAfter(decoded.iat)){ // iat: "issued at"
+		return next();
+	}
+
+	response.locals.user = userInfo; // available to pug templates
+	console.log(userInfo);
 	next();
 }
 
@@ -183,6 +213,7 @@ module.exports = {
 	signup: catchAsync(signup),
 	login: catchAsync(login),
 	protectRoute: catchAsync(protectRoute),
+	isLoggedIn: catchAsync(isLoggedIn),
 	restrictTo,
 	forgotPassword: catchAsync(forgotPassword),
 	resetPassword: catchAsync(resetPassword),

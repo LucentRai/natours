@@ -18,9 +18,13 @@ async function login(email, password){
 				password
 			}
 		});
-		console.log(result);
+
+		if(result.data.status === 'success'){
+			location.assign('/');
+		}
 	}
 	catch(error){
-		console.log(error.response.data); // response.data is the response from server (read axios docs)
+		console.log(error.response.data);
+		alert(error.response.data.message); // response.data is the response from server (read axios docs)
 	}
 }

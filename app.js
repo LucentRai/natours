@@ -64,10 +64,10 @@ app.use(hpp({
 }));
 
 // Test middleware
-app.use((request, response, next) => {
-	console.log(request.cookies);
-	next();
-});
+// app.use((request, response, next) => {
+// 	console.log(request.cookies);
+// 	next();
+// });
 
 /**** ROUTES ****/
 app.use('/', viewRouter);

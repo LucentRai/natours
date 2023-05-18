@@ -154,11 +154,11 @@ tourSchema.pre(/^find/, function(next){ // uses regular expression; any function
 	next();
 });
 
-tourSchema.post(/^find/, function(documents, next){
-	console.log(documents);
-	console.log(`Query took ${Date.now() - this.startTime} milliseconds`);
-	next();
-});
+// tourSchema.post(/^find/, function(documents, next){
+// 	console.log(documents);
+// 	console.log(`Query took ${Date.now() - this.startTime} milliseconds`);
+// 	next();
+// });
 
 // AGGREGATION MIDDLEWARE
 /*
