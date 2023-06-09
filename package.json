@@ -2,17 +2,23 @@
 	"name": "natours",
 	"version": "1.0.0",
 	"description": "",
-	"main": "index.js",
+	"source": "./public/js/index.js",
+	"main": "./public/js/main.js",
+	"module": "./public/js/module.js",
 	"scripts": {
 		"start": "nodemon server.js",
 		"start:prod": "SET NODE_ENV=production && node server.js",
-		"debug": "ndb server.js"
+		"debug": "ndb server.js",
+		"watch:js": "parcel watch ./public/js/index.js",
+		"build:js": "parcel build"
 	},
 	"author": "Lucent Rai",
 	"license": "ISC",
 	"dependencies": {
+		"axios": "^1.4.0",
 		"bcryptjs": "^2.4.3",
 		"cookie-parser": "^1.4.6",
+		"core-js": "^3.30.2",
 		"dotenv": "^16.0.3",
 		"express": "^4.18.2",
 		"express-mongo-sanitize": "^2.2.0",
@@ -24,8 +30,13 @@
 		"morgan": "^1.10.0",
 		"nodemailer": "^6.9.1",
 		"pug": "^3.0.2",
+		"regenerator-runtime": "^0.13.11",
 		"slugify": "^1.6.5",
 		"validator": "^13.9.0",
 		"xss-clean": "^0.1.1"
+	},
+	"devDependencies": {
+		"parcel": "^2.8.3",
+		"process": "^0.11.10"
 	}
 }

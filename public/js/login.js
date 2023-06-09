@@ -1,14 +1,6 @@
-const loginForm = document.querySelector('.form');
-// const loginBtn = document.querySelector('.btn .btn-green');
+import axios from 'axios';
 
-loginForm.addEventListener('submit', event => {
-	event.preventDefault();
-	const email = document.querySelector('#email').value;
-	const password = document.querySelector('#password').value;
-	login(email, password);
-});
-
-async function login(email, password){
+export async function login(email, password){
 	try{
 		const result = await axios({
 			method: 'POST',

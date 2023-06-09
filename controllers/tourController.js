@@ -151,4 +151,4 @@ module.exports = {
 	getMonthlyTours: catchAsync(getMonthlyTours),
 	getTourWithin: catchAsync(getTourWithin),
 	getTourDistances: catchAsync(getTourDistances)
-}
+};

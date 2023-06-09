@@ -73,7 +73,7 @@ exports.getMe = (request, response, next) => {
 exports.updateOne = Model =>
 	catchAsync(async (request, response, next) => {
 		const document = await Model.findByIdAndUpdate(request.params.id, request.body, {
-			new: true,
+			new: true, // return modified document rather than the original
 			runValidators: true
 		});
 		
