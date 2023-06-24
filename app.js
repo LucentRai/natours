@@ -1,5 +1,4 @@
 const express = require('express');
-const pug = require('pug');
 const path = require('path');
 // const helmet = require('helmet'); // This does not work with mapbox api
 const rateLimit = require('express-rate-limit');
