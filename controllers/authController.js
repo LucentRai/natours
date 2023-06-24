@@ -190,7 +190,7 @@ function sendTokenResponse(user, statusCode, response){
 
 	const cookieOptions = {
 		expires: new Date(Date.now() + process.env.JWT_EXPIRATION_JS * 24 * 60 * 60 * 1000),
-		HTTPOnly: true // cookie cannot be accessed or modified by the browser
+		httpOnly: true // cookie cannot be accessed or modified by the browser
 	}
 	if(process.env.NODE_ENV === 'production'){
 		cookieOptions.secure = true; // send cookie only on HTTPS
