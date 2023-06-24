@@ -23,3 +23,19 @@ export async function login(email, password){
 		showAlert('error', error.response.data.message);
 	}
 }
+
+export async function logout(){
+	try{
+		const result = await axios({
+			method: 'GET',
+			url: 'http://localhost:8000/api/v1/users/logout'
+		});
+
+		if(result.data.status === 'success'){
+			location.reload(true); // if true is not passed browser may load the cache instead of reloading from server
+		}
+	}
+	catch(error){
+		showAlert('error', 'Error logging out. Try Again');
+	}
+};

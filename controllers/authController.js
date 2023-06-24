@@ -32,6 +32,18 @@ async function login(request, response, next){
 	sendTokenResponse(user, 200, response);
 }
 
+async function logout(request, response){
+	response.cookie('jwt', 'loggedout', {
+		expires: new Date(Date.now() + 10 * 1000),
+		httpOnly: true
+	});
+
+	response.status(200)
+		.json({
+			status: "success"
+		});
+}
+
 async function forgotPassword(request, response, next){
 	// find user
 	const user = await User.findOne({email: request.body.email});
@@ -145,30 +157,34 @@ async function protectRoute(request, response, next){
 async function isLoggedIn(request, response, next){
 	let token;
 
-	if(request.cookies.jwt){
-		token = request.cookies.jwt;
-	}
+	try{
+		if(request.cookies.jwt){
+			token = request.cookies.jwt;
+		}
 
-	if(!token){
+		if(!token){
+			return next();
+		}
+
+		// JWT Verification
+		const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+		// if user is deleted
+		const userInfo = await User.findById(decoded.id);
+		if(!userInfo){
+			return next();
+		}
+
+		// if password is changed after JWT was issued
+		if(userInfo.changedPasswordAfter(decoded.iat)){ // iat: "issued at"
+			return next();
+		}
+
+		response.locals.user = userInfo; // available to pug templates
+	}
+	catch(err){
 		return next();
 	}
-
-	// JWT Verification
-	const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
-	// if user is deleted
-	const userInfo = await User.findById(decoded.id);
-	if(!userInfo){
-		return next();
-	}
-
-	// if password is changed after JWT was issued
-	if(userInfo.changedPasswordAfter(decoded.iat)){ // iat: "issued at"
-		return next();
-	}
-
-	response.locals.user = userInfo; // available to pug templates
-	console.log(userInfo);
 	next();
 }
 
@@ -212,8 +228,9 @@ function sendTokenResponse(user, statusCode, response){
 module.exports = {
 	signup: catchAsync(signup),
 	login: catchAsync(login),
+	logout: catchAsync(logout),
 	protectRoute: catchAsync(protectRoute),
-	isLoggedIn: catchAsync(isLoggedIn),
+	isLoggedIn,
 	restrictTo,
 	forgotPassword: catchAsync(forgotPassword),
 	resetPassword: catchAsync(resetPassword),
