@@ -151,6 +151,7 @@ async function protectRoute(request, response, next){
 
 	// Grant Access to protected route
 	request.userInfo = userInfo;
+	response.locals.user = userInfo;
 	next();
 }
 

@@ -29,14 +29,21 @@ async function getTour(request, response, next){
 	});
 }
 
-function getLoginForm(request, response, next){
+function getLoginForm(request, response){
 	response.status(200).render('login', {
 		title: 'Login'
+	});
+}
+
+function getAccount(request, response){
+	response.status(200).render('account', {
+		title: `${request.userInfo.name} Profile`
 	});
 }
 
 module.exports = {
 	getOverview: catchAsync(getOverview),
 	getTour: catchAsync(getTour),
-	getLoginForm
+	getLoginForm,
+	getAccount
 };
