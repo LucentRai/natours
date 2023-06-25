@@ -102,11 +102,12 @@ async function resetPassword(request, response, next){
 }
 
 async function updatePassword(request, response, next){
+	console.log(request.body);
 	// Get user from collection
 	const user = await User.findById(request.userInfo.id).select('+password'); // request.userInfo comes from protectRoute()
 
 	// Check if POSTed current password is correct
-	if(!user.isPasswordCorrect(request.body.currentPassword, user.password)){
+	if(!(await user.isPasswordCorrect(request.body.currentPassword, user.password))){
 		return next(new AppError('Incorrect password', 400));
 	}
 
