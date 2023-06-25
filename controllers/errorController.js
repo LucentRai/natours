@@ -6,7 +6,7 @@ module.exports = (error, request, response, next) => {
 	error.message = error.message || 'Something went very wrong';
 
 	if(process.env.NODE_ENV === 'development'){
-		sendErrorDev(error, response);
+		sendErrorDev(error, request, response);
 		return;
 	}
 
@@ -28,40 +28,69 @@ module.exports = (error, request, response, next) => {
 	}
 
 	e.message = error.message;
-	sendErrorClient(e, response);
+	sendErrorClient(e, request, response);
 	return;
 };
 
-function sendErrorDev(error, response){
-	response
-	.status(error.statusCode)
-	.json({
-		status: error.status,
-		error,
-		message: error.message,
-		stack: error.stack
-	});
+function sendErrorDev(error, request, response){
+	// for API
+	if(request.originalUrl.startsWith('/api')){
+		return response
+		.status(error.statusCode)
+		.json({
+			status: error.status,
+			error,
+			message: error.message,
+			stack: error.stack
+		});
+	}
+
+	// for rendered website
+	response.status(error.statusCode)
+		.render('error', {
+			title: 'ERROR',
+			message: error.message
+		});
 }
 
-function sendErrorClient(error, response){
-	if(error.isOperational){	// Operational, trusted error
-		response
-			.status(error.statusCode)
-			.json({
-				status: error.status,
-				message: error.message
-			});
-	}
-	else{	// Programming or other unknown error
+function sendErrorClient(error, request, response){
+	// for API
+	if(request.originalUrl.startsWith('/api')){
+		if(error.isOperational){	// Operational, trusted error
+			return response
+				.status(error.statusCode)
+				.json({
+					status: error.status,
+					message: error.message
+				});
+		}
+		// Programming or other unknown error
 		console.error(error); // Log error
-
-		response // send generic message
+		return response // send generic message
 			.status(500)
 			.json({
 				status: 'Error',
 				message: 'Something went wrong'
 			});
 	}
+
+	// for rendered website
+	if(error.isOperational){	// Operational, trusted error
+		return response
+			.status(error.statusCode)
+			.render('error', {
+				title: 'Something went wrong',
+				message: error.message
+			});
+	}
+	// Programming or other unknown error
+	console.error(error); // Log error
+	response // send generic message
+		.status(500)
+		.render('error', {
+			title: 'Something went wrong',
+			message: 'Something went wrong'
+		});
 }
 
 function handleCastErrorDB(error){
