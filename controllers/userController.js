@@ -2,6 +2,33 @@ const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
 const factory = require('../controllers/handlerFactory');
+const multer = require('multer');
+
+const userImageUploadLocation = 'public/img/users';
+
+const multerStorage = multer.diskStorage({
+	destination: (req, file, callback) => {
+		callback(null, userImageUploadLocation);
+	},
+	filename: (req, file, callback) => {
+		const extension = file.mimetype.split('/')[1];
+		callback(null, `user-${req.userInfo.id}-${Date.now()}.${extension}`);
+	}
+});
+
+const multerFilter = (req, file, callback) => {
+	if(file.mimetype.startsWith('image')){
+		callback(null, true);
+	}
+	else{
+		callback(new AppError('Not an image! Please upload images only', 400), false);
+	}
+}
+
+const upload = multer({
+	storage: multerStorage,
+	fileFilter: multerFilter
+});
 
 async function getAllUsers(request, response){
 	const users = await User.find();
@@ -24,6 +51,7 @@ function postUser(request, response){
 }
 
 async function updateMe(request, response, next){
+
 	// if user POSTs password data
 	if(request.body.password){
 		return next(new AppError('This route is not for updating passwords. Please use /updatePassword'), 400);
@@ -71,5 +99,6 @@ module.exports = {
 	updateUser: factory.updateOne(User), // DON'T CHANGE PASSWORD WITH THIS
 	deleteUser: factory.deleteOne(User),
 	updateMe: catchAsync(updateMe),
-	deleteMe: catchAsync(deleteMe)
+	deleteMe: catchAsync(deleteMe),
+	uploadUserPhoto: upload.single('photo')
 };
