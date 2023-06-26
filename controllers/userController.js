@@ -59,6 +59,9 @@ async function updateMe(request, response, next){
 
 	// filter unwanted request body fields
 	const filteredBody = filterRequestBody(request.body, 'name', 'email');
+	if(request.file){
+		filteredBody.photo = request.file.filename;
+	}
 
 	// update user document
 	const updatedUser = await User.findByIdAndUpdate(request.userInfo._id, filteredBody, {new: true, runValidators: true});

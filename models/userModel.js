@@ -19,7 +19,8 @@ const userSchema = new mongoose.Schema({
 		validate: [validator.isEmail, 'Please provide a valid email']
 	},
 	photo: {
-		type: String
+		type: String,
+		default: 'default.jpg'
 	},
 	role: {
 		type: String,
@@ -52,6 +53,7 @@ const userSchema = new mongoose.Schema({
 	}
 });
 
+
 userSchema.pre(/^find/, function(next){
 	this.find({active: {$ne: false}});
 	next();
@@ -70,6 +72,7 @@ userSchema.pre('save', async function(next){
 	this.confirmPassword = undefined;
 	next();
 });
+
 userSchema.pre('save', function(next){
 	if(!this.isModified('password') || this.isNew){
 		return next();
@@ -79,10 +82,12 @@ userSchema.pre('save', function(next){
 	next();
 });
 
+
 // static instance methods
 userSchema.methods.isPasswordCorrect = async function(inputPassword, actualPassword){
 	return await bcrypt.compare(inputPassword, actualPassword);
 }
+
 userSchema.methods.changedPasswordAfter = function(JWTTimestamp){
 	if(this.passwordChangedAt){
 		const changedTime = parseInt(this.passwordChangedAt / 1000, 10); // convert to milliseconds, base 10
@@ -91,6 +96,7 @@ userSchema.methods.changedPasswordAfter = function(JWTTimestamp){
 	}
 	return false;
 }
+
 userSchema.methods.createResetPasswordToken = function(){
 	const resetToken = crypto.randomBytes(32).toString('hex');
 
@@ -103,6 +109,7 @@ userSchema.methods.createResetPasswordToken = function(){
 
 	return resetToken;
 }
+
 
 const Users = mongoose.model('Users', userSchema);
 module.exports = Users;
