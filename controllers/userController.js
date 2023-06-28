@@ -3,19 +3,22 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
 const factory = require('../controllers/handlerFactory');
 const multer = require('multer');
+const sharp = require('sharp');
 
 const userImageUploadLocation = 'public/img/users';
 
-const multerStorage = multer.diskStorage({
-	destination: (req, file, callback) => {
-		callback(null, userImageUploadLocation);
-	},
-	filename: (req, file, callback) => {
-		const extension = file.mimetype.split('/')[1];
-		callback(null, `user-${req.userInfo.id}-${Date.now()}.${extension}`);
-	}
-});
+/***************** For Direct Disk Storage *****************/
+// const multerStorage = multer.diskStorage({
+// 	destination: (req, file, callback) => {
+// 		callback(null, userImageUploadLocation);
+// 	},
+// 	filename: (req, file, callback) => {
+// 		const extension = file.mimetype.split('/')[1];
+// 		callback(null, `user-${req.userInfo.id}-${Date.now()}.${extension}`);
+// 	}
+// });
 
+const multerStorage = multer.memoryStorage();
 const multerFilter = (req, file, callback) => {
 	if(file.mimetype.startsWith('image')){
 		callback(null, true);
@@ -23,22 +26,27 @@ const multerFilter = (req, file, callback) => {
 	else{
 		callback(new AppError('Not an image! Please upload images only', 400), false);
 	}
-}
+};
 
 const upload = multer({
 	storage: multerStorage,
 	fileFilter: multerFilter
 });
 
-async function getAllUsers(request, response){
-	const users = await User.find();
+function resizeUserPhoto(request, response, next){
+	if(!request.file){
+		next();
+	}
 
-	response
-		.status(200)
-		.json({
-			status: "sucess",
-			data: users
-		});
+	request.file.filename = `user-${request.userInfo.id}-${Date.now()}.jpeg`;
+
+	sharp(request.file.buffer)
+		.resize(500, 500)
+		.toFormat('jpeg')
+		.jpeg({quality: 90})
+		.toFile(`${userImageUploadLocation}/${request.file.filename}`);
+
+	next();
 }
 
 function postUser(request, response){
@@ -51,7 +59,6 @@ function postUser(request, response){
 }
 
 async function updateMe(request, response, next){
-
 	// if user POSTs password data
 	if(request.body.password){
 		return next(new AppError('This route is not for updating passwords. Please use /updatePassword'), 400);
@@ -103,5 +110,6 @@ module.exports = {
 	deleteUser: factory.deleteOne(User),
 	updateMe: catchAsync(updateMe),
 	deleteMe: catchAsync(deleteMe),
-	uploadUserPhoto: upload.single('photo')
+	uploadUserPhoto: upload.single('photo'),
+	resizeUserPhoto
 };

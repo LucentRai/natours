@@ -16,7 +16,7 @@ userRouter.use(authController.protectRoute);
 
 userRouter.get('/me', userController.getMe, userController.getUser);
 userRouter.patch('/updatePassword', authController.updatePassword);
-userRouter.patch('/updateMe', userController.uploadUserPhoto, userController.updateMe);
+userRouter.patch('/updateMe', userController.uploadUserPhoto, userController.resizeUserPhoto, userController.updateMe);
 userRouter.delete('/deleteMe', userController.deleteMe);
 
 // CHECK IF USER IS ADMIN
