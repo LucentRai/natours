@@ -5,49 +5,6 @@ const factory = require('../controllers/handlerFactory');
 const multer = require('multer');
 const sharp = require('sharp');
 
-const userImageUploadLocation = 'public/img/users';
-
-/***************** For Direct Disk Storage *****************/
-// const multerStorage = multer.diskStorage({
-// 	destination: (req, file, callback) => {
-// 		callback(null, userImageUploadLocation);
-// 	},
-// 	filename: (req, file, callback) => {
-// 		const extension = file.mimetype.split('/')[1];
-// 		callback(null, `user-${req.userInfo.id}-${Date.now()}.${extension}`);
-// 	}
-// });
-
-const multerStorage = multer.memoryStorage();
-const multerFilter = (req, file, callback) => {
-	if(file.mimetype.startsWith('image')){
-		callback(null, true);
-	}
-	else{
-		callback(new AppError('Not an image! Please upload images only', 400), false);
-	}
-};
-
-const upload = multer({
-	storage: multerStorage,
-	fileFilter: multerFilter
-});
-
-function resizeUserPhoto(request, response, next){
-	if(!request.file){
-		next();
-	}
-
-	request.file.filename = `user-${request.userInfo.id}-${Date.now()}.jpeg`;
-
-	sharp(request.file.buffer)
-		.resize(500, 500)
-		.toFormat('jpeg')
-		.jpeg({quality: 90})
-		.toFile(`${userImageUploadLocation}/${request.file.filename}`);
-
-	next();
-}
 
 function postUser(request, response){
 	response
@@ -100,6 +57,55 @@ function filterRequestBody(body, ...allowedFields){
 
 	return newObj;
 }
+
+
+/***************** USER PHOTO UPLOAD *****************/
+const userImageLocation = 'public/img/users';
+
+// For Direct Disk Storage
+
+// const multerStorage = multer.diskStorage({
+// 	destination: (req, file, callback) => {
+// 		callback(null, userImageLocation);
+// 	},
+// 	filename: (req, file, callback) => {
+// 		const extension = file.mimetype.split('/')[1];
+// 		callback(null, `user-${req.userInfo.id}-${Date.now()}.${extension}`);
+// 	}
+// });
+
+const multerStorage = multer.memoryStorage();
+
+function multerFilter(request, file, callback){
+	if(file.mimetype.startsWith('image')){
+		callback(null, true);
+	}
+	else{
+		callback(new AppError('Not an image! Please upload images only', 400), false);
+	}
+}
+
+const upload = multer({
+	storage: multerStorage,
+	fileFilter: multerFilter
+});
+
+function resizeUserPhoto(request, response, next){
+	if(!request.file){
+		next();
+	}
+
+	request.file.filename = `user-${request.userInfo.id}-${Date.now()}.jpeg`;
+
+	sharp(request.file.buffer)
+		.resize(500, 500)
+		.toFormat('jpeg')
+		.jpeg({quality: 90})
+		.toFile(`${userImageLocation}/${request.file.filename}`);
+
+	next();
+}
+
 
 module.exports = {
 	postUser,
