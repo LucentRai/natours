@@ -4,6 +4,10 @@ const Tour = require('../models/tourModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
 const factory = require('./handlerFactory');
+const multer = require('multer');
+const sharp = require('sharp');
+
+
 
 function aliasTopTour(request, response, next){ // Middleware for top-5-cheap route
 	request.query.limit = '5'; // query field should be string
@@ -140,6 +144,64 @@ async function getTourDistances(request, response, next){
 	});
 }
 
+/********************** TOUR IMAGE UPLOAD **********************/
+const tourImageLocation = 'public/img/tours';
+
+const multerStorage = multer.memoryStorage();
+
+function multerFilter(request, file, callback){
+	if(file.mimetype.startsWith('image')){
+		callback(null, true);
+	}
+	else{
+		callback(new AppError('Not an image! Please upload images only', 400), false);
+	}
+}
+
+const upload = multer({
+	storage: multerStorage,
+	fileFilter: multerFilter
+});
+
+const uploadTourImages = upload.fields([
+	{name: 'imageCover', maxCount: 1},
+	{name: 'images', maxCount: 3}
+]);
+
+async function resizeTourImages(request, response, next){
+	if(!request.files.imageCover.length && !request.files.images.length){
+		next();
+	}
+
+	// 1) Cover image
+	request.body.imageCover = `tour-${request.params.id}-${Date.now()}-cover.jpeg`;
+
+	await sharp(request.files.imageCover[0].buffer)
+	.resize(2000, 1333)
+	.toFormat('jpeg')
+	.jpeg({quality: 90})
+	.toFile(`${tourImageLocation}/${request.body.imageCover}`);
+
+	// 2) Images
+	request.body.images = [];
+
+	await Promise.all( // await all the images
+		request.files.images.map(async (file, i) => { // foreach does not work here
+			const filename = `tour-${request.params.id}-${Date.now()}-${i+1}.jpeg`;
+	
+			await sharp(file.buffer)
+				.resize(2000, 1333)
+				.toFormat('jpeg')
+				.jpeg({quality: 90})
+				.toFile(`${tourImageLocation}/${filename}`);
+	
+			request.body.images.push(filename);
+		})
+	);
+
+	next();
+}
+
 module.exports = {
 	getAllTours: factory.getAll(Tour),
 	getTour: factory.getOne(Tour, {path: 'reviews'}),
@@ -150,5 +212,7 @@ module.exports = {
 	getTourStats: catchAsync(getTourStats),
 	getMonthlyTours: catchAsync(getMonthlyTours),
 	getTourWithin: catchAsync(getTourWithin),
-	getTourDistances: catchAsync(getTourDistances)
+	getTourDistances: catchAsync(getTourDistances),
+	uploadTourImages,
+	resizeTourImages: catchAsync(resizeTourImages)
 };

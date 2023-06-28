@@ -90,14 +90,14 @@ const upload = multer({
 	fileFilter: multerFilter
 });
 
-function resizeUserPhoto(request, response, next){
+async function resizeUserPhoto(request, response, next){
 	if(!request.file){
 		next();
 	}
 
 	request.file.filename = `user-${request.userInfo.id}-${Date.now()}.jpeg`;
 
-	sharp(request.file.buffer)
+	await sharp(request.file.buffer)
 		.resize(500, 500)
 		.toFormat('jpeg')
 		.jpeg({quality: 90})
@@ -117,5 +117,5 @@ module.exports = {
 	updateMe: catchAsync(updateMe),
 	deleteMe: catchAsync(deleteMe),
 	uploadUserPhoto: upload.single('photo'),
-	resizeUserPhoto
+	resizeUserPhoto: catchAsync(resizeUserPhoto)
 };
