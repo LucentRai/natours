@@ -51,6 +51,10 @@ class Email{
 	async sendWelcome(){
 		this.send('welcome', 'Welcome to Natours Family');
 	}
+
+	async sendPasswordReset(){
+		this.send('passwordReset', 'Your password reset token (valid for 10 minutes)');
+	}
 }
 
 

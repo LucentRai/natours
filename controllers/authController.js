@@ -61,12 +61,7 @@ async function forgotPassword(request, response, next){
 	// Send mail
 	try{
 		const resetURL = `${request.protocol}://${request.get('host')}/api/v1/users/resetPassword/${resetToken}`;
-		
-		// await sendEmail({
-		// 	email: user.email,
-		// 	subject: 'Your password reset token (valid for 10 min)',
-		// 	message: `Click this link to reset your password ${resetURL}\nIf you didn't request this then please ignore this message.`
-		// });
+		await new Email(user, resetURL).sendPasswordReset();
 
 		sendTokenResponse(user, 200, response);
 		return;
