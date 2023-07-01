@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
-const sendEmail = require('../utils/email');
+const Email = require('../utils/email');
 
 async function signup(request, response, next){
 	const newUser = await User.create({
@@ -13,6 +13,9 @@ async function signup(request, response, next){
 		password: request.body.password,
 		confirmPassword: request.body.confirmPassword
 	});
+	const url = `${request.protocol}://${request.get('host')}/me`;
+
+	await new Email(newUser, url).sendWelcome();
 
 	sendTokenResponse(newUser, 201, response);
 }
@@ -59,11 +62,11 @@ async function forgotPassword(request, response, next){
 	try{
 		const resetURL = `${request.protocol}://${request.get('host')}/api/v1/users/resetPassword/${resetToken}`;
 		
-		await sendEmail({
-			email: user.email,
-			subject: 'Your password reset token (valid for 10 min)',
-			message: `Click this link to reset your password ${resetURL}\nIf you didn't request this then please ignore this message.`
-		});
+		// await sendEmail({
+		// 	email: user.email,
+		// 	subject: 'Your password reset token (valid for 10 min)',
+		// 	message: `Click this link to reset your password ${resetURL}\nIf you didn't request this then please ignore this message.`
+		// });
 
 		sendTokenResponse(user, 200, response);
 		return;
@@ -237,4 +240,4 @@ module.exports = {
 	forgotPassword: catchAsync(forgotPassword),
 	resetPassword: catchAsync(resetPassword),
 	updatePassword: catchAsync(updatePassword)
-}
+};
