@@ -10,7 +10,7 @@
 	},
 	"scripts": {
 		"start": "nodemon server.js",
-		"start:prod": "SET NODE_ENV=production && node server.js",
+		"start:prod": "SET NODE_ENV=production& node server.js",
 		"debug": "ndb server.js",
 		"build:js": "parcel build"
 	},

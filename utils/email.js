@@ -11,10 +11,17 @@ class Email{
 	}
 
 	newTransport(){
-		if(process.env.NODE_ENV === 'production'){
-			return;
+		if(process.env.NODE_ENV === "production"){
+			return nodemailer.createTransport({
+				host: "smtp.sendgrid.net",
+				port: 587,
+				secure: false,
+				auth: {
+					user: process.env.SENDGRID_USERNAME,
+					pass: process.env.SENDGRID_PASSWORD,
+				}
+			});
 		}
-
 		return nodemailer.createTransport({
 			host: process.env.EMAIL_HOST,
 			port: process.env.EMAIL_PORT,
