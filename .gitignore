@@ -1,6 +1,6 @@
 .eslintrc.json
 .parcel-cache
 node_modules
-config.env
 public/img/users/user-*
 public/img/tours/tour-*
+config.env
