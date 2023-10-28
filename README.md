@@ -1,3 +1,5 @@
-# Natours App
+# Natural Tours App
 ## Tours and Travels App
-Udemy Course on Express JS and MongoDB
+* Express JS
+* MongoDB
+* Pug
