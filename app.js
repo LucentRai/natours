@@ -14,6 +14,7 @@ const viewRouter = require('./routes/viewRoute');
 const tourRouter = require('./routes/tourRoute');
 const userRouter = require('./routes/userRoute');
 const reviewRouter = require('./routes/reviewRoute');
+const bookingRouter = require('./routes/bookingRoute');
 
 const app = express();
 
@@ -73,6 +74,7 @@ app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/bookings', bookingRouter);
 
 // for unhandled routes
 app.all('*', (request, response, next) => {
