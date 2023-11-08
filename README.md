@@ -9,7 +9,7 @@
 	<a href="#how-to-use">How To Use</a> •
 	<a href="#api-usage">API Usage</a> •
 	<a href="#deployment">Deployment</a> •
-	<a href="#build-with">Built With</a> •
+	<a href="#built-with">Built With</a> •
 	<a href="#to-do">To-do</a> •
 	<a href="#installation">Installation</a> • 
 	<a href="#known-bugs">Known Bugs</a> • 
@@ -17,7 +17,7 @@
 	<a href="#acknowledgement">Acknowledgement</a>
 </p>
 
-## Key Features 📝
+## Key Features
 
 * Authentication and Authorization
 	- Sign up, Log in, Logout, Update, and reset password.
@@ -52,7 +52,7 @@
 	- A regular user can not add a tour to their list of favorite tours when it is already a favorite.
 * Credit card Payment
 
-## How To Use 🤔
+## How To Use
 
 ### Book a tour
 * Login to the site
@@ -83,7 +83,7 @@ Before using the API, you need to set the variables in Postman depending on your
 	- {{password}} with your user password as value.
 	```
 
-## Built With 🏗️
+## Built With
 
 * [NodeJS](https://nodejs.org/en/) - JS runtime environment
 * [Express](http://expressjs.com/) - The web framework used
@@ -99,7 +99,7 @@ Before using the API, you need to set the variables in Postman depending on your
 * [Mapbox](https://www.mapbox.com/) - Displaying the different locations of each tour.
 
 
-## To-do 🗒️
+## To-do
 
 * Review and rating
 	- Allow users to add a review directly at the website after they have taken a tour
@@ -143,7 +143,7 @@ If you wish to play around with the code base in your local environment, do the 
 * Your app should be running just fine.
 ```
 
-## Installation 🛠️
+## Installation
 You can fork the app or you can git-clone the app into your local machine. Once done, please install all the
 dependencies by running
 ```
@@ -155,7 +155,7 @@ $ npm run start:prod (for production)
 $ npm run debug (for debug)
 ```
 
-## Future Updates 🪴
+## Future Updates
 
 * Enable PWA
 * Improve overall UX/UI and fix bugs
@@ -163,9 +163,8 @@ $ npm run debug (for debug)
 * Recently Viewed Tours
 * And More! There's always room for improvement!
 
-## License 📄
+## License
 This project is open-sourced under the [MIT license](https://opensource.org/licenses/MIT).
 
-## Acknowledgement 🙏🏻
-
+## Acknowledgement 
 * This project is part of the online course I've taken at Udemy. Thanks to Jonas Schmedtmann for creating this awesome course! Link to the course: [Node.js, Express, MongoDB & More: The Complete Bootcamp 2019](https://www.udemy.com/course/nodejs-express-mongodb-bootcamp/)
