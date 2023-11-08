@@ -3,4 +3,5 @@
 node_modules
 public/img/users/user-*
 public/img/tours/tour-*
+public/index.*
 config.env
