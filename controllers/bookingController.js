@@ -46,5 +46,10 @@ async function createBookingCheckout(request, response, next) {
 
 module.exports = {
 	getCheckoutSession: catchAsync(getCheckoutSession),
-	createBookingCheckout: catchAsync(createBookingCheckout)
+	createBookingCheckout: catchAsync(createBookingCheckout),
+	createBooking: factory.createOne(Booking),
+	getBooking: factory.getOne(Booking),
+	getAllBookings: factory.getAll(Booking),
+	updateBooking: factory.updateOne(Booking),
+	deleteBooking: factory.deleteOne(Booking)
 };
