@@ -44,8 +44,6 @@ function getAccount(request, response) {
 
 async function getMyTours(request, response, next) {
 	const bookings = await Booking.find({user: request.userInfo.id});
-	console.log(request.userInfo.id);
-	console.log(bookings);
 
 	const tourIds = bookings.map(booking => booking.tour);
 	const tours = await Tour.find({ _id: {$in: tourIds} });

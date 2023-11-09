@@ -100,7 +100,6 @@ async function resetPassword(request, response, next){
 }
 
 async function updatePassword(request, response, next){
-	console.log(request.body);
 	// Get user from collection
 	const user = await User.findById(request.userInfo.id).select('+password'); // request.userInfo comes from protectRoute()
 

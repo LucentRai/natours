@@ -65,7 +65,7 @@ function sendErrorClient(error, request, response){
 				});
 		}
 		// Programming or other unknown error
-		console.error(error); // Log error
+		console.error(error);
 		return response // send generic message
 			.status(500)
 			.json({
@@ -84,7 +84,7 @@ function sendErrorClient(error, request, response){
 			});
 	}
 	// Programming or other unknown error
-	console.error(error); // Log error
+	console.error(error);
 	response // send generic message
 		.status(500)
 		.render('error', {

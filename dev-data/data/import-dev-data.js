@@ -6,9 +6,6 @@ const Tour = require('./../../models/tourModel');
 const User = require('./../../models/userModel');
 const Review = require('./../../models/reviewModel');
 
-console.log(typeof(Tour));
-console.log(Tour);
-
 dotenv.config({path: path.join(__dirname, '/../../config.env')});
 
 mongoose
