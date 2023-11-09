@@ -2,7 +2,7 @@ import axios from 'axios';
 import { showAlert } from './alerts';
 
 export async function updateAccount(data, type){ // type can be 'password' or 'data'
-	let url = 'http://localhost:8000/api/v1/users/';
+	let url = '/api/v1/users/';
 
 	if(type === 'password'){
 		url += 'updatePassword';
