@@ -1,6 +1,7 @@
 import "core-js/stable";
 import {displayMap} from "./mapbox";
 import {login, logout} from './login';
+import {signup} from './signup';
 import {updateAccount} from './updateUser';
 import {bookTour} from './stripe';
 
@@ -11,6 +12,8 @@ const logoutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
 const bookBtn = document.getElementById('book-tour');
+const signupForm = document.querySelector('.signup-form');
+const signupBtn = document.getElementById('signup-btn');
 
 // DELEGATION
 if(mapBox){
@@ -29,6 +32,17 @@ if(loginForm){
 
 if(logoutBtn){
 	logoutBtn.addEventListener('click', logout);
+}
+
+if(signupForm){
+	signupForm.addEventListener('submit', e => {
+		e.preventDefault();
+		const name = document.getElementById('name').value;
+		const email = document.getElementById('email').value;
+		const password = document.getElementById('password').value;
+		const confirmPassword = document.getElementById('confirmPassword').value;
+		signup(name, email, password, confirmPassword);
+	});
 }
 
 if(userDataForm){

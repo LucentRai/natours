@@ -12,6 +12,7 @@ viewRouter.use(authController.isLoggedIn);
 viewRouter.get('/', bookingController.createBookingCheckout, viewController.getOverview);
 viewRouter.get('/tour/:slug', viewController.getTour);
 viewRouter.get('/login', viewController.getLoginForm);
+viewRouter.get('/signup', viewController.getSignupForm);
 viewRouter.get('/my-tours', authController.protectRoute, viewController.getMyTours);
 
 module.exports = viewRouter;
