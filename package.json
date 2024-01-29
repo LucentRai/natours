@@ -5,7 +5,8 @@
 	"browserslist": "> 0.5%, last 2 versions, not dead",
 	"targets": {
 		"default": {
-			"distDir": "public"
+			"distDir": "public",
+			"context": "browser"
 		}
 	},
 	"scripts": {

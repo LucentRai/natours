@@ -1,6 +1,5 @@
 const express = require('express');
 const path = require('path');
-const helmet = require('helmet'); // This does not work with mapbox api
 const rateLimit = require('express-rate-limit');
 const xss = require('xss-clean');
 const mongoSanitize = require('express-mongo-sanitize');
@@ -33,22 +32,6 @@ if(process.env.NODE_ENV === 'development'){
 
 /*** MIDDLEWARE ***/
 app.use(compresssion());
-
-// Set security HTTP headers
-app.use(
-	helmet.contentSecurityPolicy({
-		directives: {
-			defaultSrc: ["'self'", 'https:'],
-			scriptSrc: ["'self'", 'https://*.mapbox.com', "'unsafe-inline'"],
-			workerSrc: ["'self'", 'blob:'],
-			childSrc: ["'self'", 'blob:'],
-			styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
-			imgSrc: ["'self'", 'data:', 'blob:'],
-			fontSrc: ["'self'", 'https:', 'data:'],
-			connectSrc: ["'self'", 'https://*.tiles.mapbox.com', 'https://api.mapbox.com', 'https://events.mapbox.com'],
-			frameSrc: ["'self'", 'https:'],
-	},})
-);
 
 // Restrict requests to avoid DOS attacks
 app.use('/api', rateLimit({
