@@ -36,6 +36,12 @@ function getLoginForm(request, response) {
 	});
 }
 
+function getSignupForm(request, response) {
+	response.status(200).render('signup', {
+		title: 'Signup'
+	});
+}
+
 function getAccount(request, response) {
 	response.status(200).render('account', {
 		title: `${request.userInfo.name} Profile`
@@ -58,6 +64,7 @@ module.exports = {
 	getOverview: catchAsync(getOverview),
 	getTour: catchAsync(getTour),
 	getLoginForm,
+	getSignupForm,
 	getAccount,
 	getMyTours: catchAsync(getMyTours)
 };
